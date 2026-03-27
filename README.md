@@ -41,12 +41,22 @@ pub async fn my_api_function() {
 }
 ```
 
-### Running the Example
+### Running the Web API Example
 
-The project includes an example that demonstrates the rate limit in action. It will succeed for the first 5 rapid calls and then panic on the 6th call.
+There is also a real-world web API example using `axum`. To run it:
 
 ```bash
-cargo run --package rate-limiter-examples
+cargo run --package axum-example
+```
+
+Once running, you can test the endpoints:
+- `http://127.0.0.1:3000/limited` (Cap: 5, Refill: 1.0/s)
+- `http://127.0.0.1:3000/burst` (Cap: 2, Refill: 0.1/s)
+
+Example using `curl`:
+```bash
+# Succeeds for first 5 calls, then fails
+for i in {1..6}; do curl -i http://127.0.0.1:3000/limited; done
 ```
 
 ## How it Works

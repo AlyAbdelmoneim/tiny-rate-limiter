@@ -2,5 +2,6 @@
 members = [
     "rate-limiter-core",
     "rate-limiter-macro",
-    "examples"
+    "examples",
+    "axum-example"
 ]
