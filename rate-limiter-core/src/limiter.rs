@@ -22,30 +22,45 @@ pub enum RateLimitError {
 }
 pub struct RateLimiter {
     buckets: HashMap<String, TokenBucket>,
-    default_config: Config,
 }
 
 impl RateLimiter {
-    fn new(config: Config) -> Self {
+    fn new() -> Self {
         Self {
             buckets: HashMap::new(),
-            default_config: config,
         }
     }
 
-    pub fn check(&mut self, key: &str) -> bool {
-        let bucket = self
-            .buckets
-            .entry(key.to_string())
-            .or_insert(TokenBucket::new(self.default_config));
+    pub fn check(&mut self, key: &str, capacity: u32, refill_rate: f64) -> bool {
+        let bucket = self.buckets.entry(key.to_string()).or_insert_with(|| {
+            TokenBucket::new(Config {
+                capacity,
+                refill_rate,
+            })
+        });
+
+        // Update config if it changed
+        bucket.config.capacity = capacity;
+        bucket.config.refill_rate = refill_rate;
 
         bucket.check()
     }
-    pub fn try_consume(&mut self, key: &str) -> Result<(), RateLimitError> {
-        let bucket = self
-            .buckets
-            .entry(key.to_string())
-            .or_insert(TokenBucket::new(self.default_config));
+    pub fn try_consume(
+        &mut self,
+        key: &str,
+        capacity: u32,
+        refill_rate: f64,
+    ) -> Result<(), RateLimitError> {
+        let bucket = self.buckets.entry(key.to_string()).or_insert_with(|| {
+            TokenBucket::new(Config {
+                capacity,
+                refill_rate,
+            })
+        });
+
+        // Update config if it changed
+        bucket.config.capacity = capacity;
+        bucket.config.refill_rate = refill_rate;
 
         if bucket.try_consume() {
             Ok(())
@@ -92,5 +107,4 @@ impl TokenBucket {
     }
 }
 
-pub static RATE_LIMITER: Lazy<Mutex<RateLimiter>> =
-    Lazy::new(|| Mutex::new(RateLimiter::new(Config::default())));
+pub static RATE_LIMITER: Lazy<Mutex<RateLimiter>> = Lazy::new(|| Mutex::new(RateLimiter::new()));

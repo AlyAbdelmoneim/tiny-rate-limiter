@@ -4,7 +4,8 @@ A simple, thread-safe, in-memory rate limiter for Rust applications using attrib
 
 ## Features
 
-- **Attribute Macro**: Easily apply rate limits to any async function using `#[rate_limit]`.
+- **Attribute Macro**: Apply custom rate limits to any async function using `#[rate_limit]`.
+- **Per-Function Configuration**: Each function can have its own `capacity` and `refill_rate`.
 - **Token Bucket Algorithm**: Simple and effective rate limiting logic.
 - **Thread-safe**: Uses a global thread-safe limiter.
 - **Modern Rust**: Built with Rust 2024 edition and Tokio.

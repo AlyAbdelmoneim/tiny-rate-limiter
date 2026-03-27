@@ -53,12 +53,15 @@ pub fn rate_limit(args: TokenStream, input: TokenStream) -> TokenStream {
     let fn_block = &input_fn.block;
 
     let key_name = args.key;
+    let capacity = args.capacity;
+    let refill_rate = args.refill_rate;
+
     let expanded = quote! {
         #fn_vis #fn_sig {
             let key = #key_name;
 
             if let Err(rate_limiter_core::limiter::RateLimitError::Exceeded) =
-                rate_limiter_core::limiter::RATE_LIMITER.lock().unwrap().try_consume(key) {
+                rate_limiter_core::limiter::RATE_LIMITER.lock().unwrap().try_consume(key, #capacity, #refill_rate) {
                 panic!("Rate Limit Exceeded");
             }
 
