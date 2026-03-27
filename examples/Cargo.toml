@@ -1,0 +1,9 @@
+[package]
+name = "rate-limiter-examples"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+rate_limiter_macro = { path = "../rate-limiter-macro" }
+rate_limiter_core  = { path = "../rate-limiter-core" }
+tokio = { version = "1.50.0", features = ["full"] }

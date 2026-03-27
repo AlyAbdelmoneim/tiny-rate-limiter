@@ -1,0 +1,6 @@
+[workspace]
+members = [
+    "rate-limiter-core",
+    "rate-limiter-macro",
+    "examples"
+]
